@@ -64,13 +64,25 @@ var replace = function() {
   var result = _applause.replace(sourceValue);
   var matches = [];
   var content = sourceValue;
+  var doc = textEditor.getDoc();
+  // clear all marks
+  var marks = doc.getAllMarks();
+  marks.forEach(function(mark) {
+    mark.clear();
+  });
   if (result.count > 0) {
-    // highlight source from details
-    // background: rgba(113,252,159,0.8)
     (result.detail || []).forEach(function(detail) {
       var re = detail.match;
       var match;
       while ((match = re.exec(sourceValue)) !== null) {
+        // highlight
+        var from = doc.posFromIndex(match.index);
+        var to = doc.posFromIndex(match.index + match[0].length);
+        // console.log('Mark text', from, to);
+        doc.markText(from, to, {
+          className: 'match-background'
+        });
+        // detail
         var matchDetail = {
           match: match[0],
           start: match.index,
@@ -85,7 +97,7 @@ var replace = function() {
     });
     content = result.content;
   }
-  console.log('Replace matches', matches);
+  // console.log('Replace matches', matches);
   // update view
   var count = matches.length;
   var matchesDom = $('.options .results').removeClass('hidden');
@@ -104,7 +116,7 @@ var replace = function() {
 
 var create = function() {
   var optionsValue = eval('(' + optionsEditor.getValue() + ')');
-  console.log('Create applause instance with:', optionsValue);
+  // console.log('Create applause instance with:', optionsValue);
   // create new applause instance
   _applause = Applause.create($.extend({}, optionsValue, {
     // force
@@ -113,10 +125,10 @@ var create = function() {
 };
 
 $(function() {
-  console.log('jQuery:', jQuery.fn.jquery);
-  console.log('Applause:', Applause.version);
-  console.log('CodeMirror:', CodeMirror.version);
-// update version number
+  // console.log('jQuery:', jQuery.fn.jquery);
+  // console.log('Applause:', Applause.version);
+  // console.log('CodeMirror:', CodeMirror.version);
+  // update version number
   $('header span').text('v.' + Applause.version);
   // options
   var optionsTextArea = document.querySelector('div.options .editor');
@@ -130,7 +142,8 @@ $(function() {
     mode: spec,
     // viewportMargin: Infinity
     autofocus: true,
-    matchBrackets: true
+    styleSelectedText: true,
+    lineWrapping: true
   });
   // optionsEditor.setOption('mode', spec);
   // CodeMirror.autoLoadMode(optionsEditor, spec);
@@ -157,7 +170,9 @@ $(function() {
   textEditor = CodeMirror(textTextArea, {
     value: defaultText,
     mode: 'Plain Text',
-    lineNumbers: true
+    lineNumbers: true,
+    styleSelectedText: true,
+    lineWrapping: true
   });
   textEditor.on('change', replace);
   // substitution
@@ -166,7 +181,9 @@ $(function() {
     mode: 'Plain Text',
     lineNumbers: true,
     // value: defaultOptions,
-    readOnly: true
+    readOnly: true,
+    styleSelectedText: true,
+    lineWrapping: true
   });
   // create initial instance and replace
   create();

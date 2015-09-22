@@ -1,5 +1,5 @@
 {
-  "name": "applause",
+  "name": "applause.io",
   "private": true,
   "dependencies": {
     "codemirror": "~5.7.0",

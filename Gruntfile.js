@@ -260,7 +260,7 @@ module.exports = function (grunt) {
     usebanner: {
       dist: {
         options: {
-          banner: '<%= config.banner %>',
+          banner: '<%= config.banner %>'
         },
         files: {
           src: [
