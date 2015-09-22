@@ -33,7 +33,8 @@ module.exports = function (grunt) {
   // Automatically load required grunt tasks
   require('jit-grunt')(grunt, {
     useminPrepare: 'grunt-usemin',
-    usebanner: 'grunt-banner'
+    usebanner: 'grunt-banner',
+    buildcontrol: 'grunt-build-control'
   });
 
   // Configurable paths
