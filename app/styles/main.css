@@ -1,0 +1,184 @@
+
+/* Base
+--------------------------------------------- */
+
+body {
+  font-family: "Cabin",sans-serif;
+  margin: 0;
+  color: #0f0f11;
+}
+
+/* some basic styles. nothing to do with flexbox */
+/* header, footer,
+nav, article, aside {
+  border: 1px solid black;
+  padding: 0.25em;
+  margin: 0.25em;
+  border-radius: 0.25em;
+} */
+
+/*
+  Force full width & height.
+
+  If this block is removed, the layout height/length will be determined by
+  the amount of content in the page. That might result in a page which has
+  a footer only a few inches from the top of the viewport, or one which
+  scrolls beyond the viewport.
+
+  This forces the layout to always be full screen regardless of how much,
+  or how little, content is in place. Neither is "right" or "wrong", there
+  are valid cases for each. I just want to be clear what's controlling the
+  page/viewport height.
+*/
+html, body, .viewport {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+/* encapsulate the various syntax in helper clases */
+/* inspired by http://infrequently.org/2009/08/css-3-progress/ */
+
+/* items flex/expand vertically */
+.vbox {
+  display: flex;
+  flex-direction: column;
+}
+
+/* items flex/expand horizontally */
+.hbox {
+  display: flex;
+  flex-direction: row;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+/* I went with a fixed height header & footer because it's a common case.
+  This could easily be altered to flex proportionally with the page.
+*/
+/* header, footer {
+  height: 100px;
+} */
+
+.main {
+  flex: 1;
+}
+
+article {
+  flex: 5;
+}
+
+aside, nav {
+  flex: 1;
+}
+
+.header {
+  position: relative;
+  background: #131316;
+}
+
+.header h1 {
+  font-size: 1.25em;
+  color: #6cf;
+  font-weight: normal;
+  margin: 10px;
+}
+
+.header h1 span {
+  font-size: 0.75em;
+  color: #80808F;
+}
+
+.header .results {
+  position: absolute;
+  right: 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0 10px;
+  background: white;
+  border-radius: 4px;
+  top: 6px;
+  line-height: 22px;
+}
+
+.hidden {
+  display: none;
+}
+
+.content {
+  position: relative;
+  flex: 1;
+}
+
+.content > .editor {
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+div.options,
+div.text,
+div.substitution {
+  flex: 1;
+}
+
+div.options .header,
+div.text .header,
+div.substitution .header {
+  background: #bcbcc4;
+}
+
+div.options .header h1,
+div.text .header h1,
+div.substitution .header h1 {
+  font-size: 0.75em;
+  color: #0f0f11;
+  font-weight: bold;
+}
+
+div.options .header {
+  background: #6cf;
+}
+
+footer {
+  height: auto;
+  padding: 0.25em;
+  margin: 0;
+  border-radius: 0;
+  background-color: black;
+  color: white;
+}
+
+/* CodeMirror (customs)
+--------------------------------------------- */
+
+.CodeMirror {
+  height: 100%;
+}
+
+/* .CodeMirror {
+  font-family: "Source Code Pro",monospace;
+  background: none;
+  line-height: 1.5em;
+  padding: 0;
+  margin: 0;
+} */
+
+.CodeMirror-selected {
+  background: rgba(170,170,170,0.55);
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(140,150,255,0.8);
+}
+
+/* .CodeMirror div.CodeMirror-cursor {
+  pointer-events: none;
+} */

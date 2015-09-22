@@ -1,0 +1,8 @@
+{
+  "name": "applause",
+  "private": true,
+  "dependencies": {
+    "codemirror": "~5.7.0",
+    "jquery": "~2.1.4"
+  }
+}
