@@ -140,7 +140,7 @@ module.exports = function (grunt) {
         dest: '.tmp/scripts/main.js',
         options: {
           browserifyOptions: {
-            debug: true
+            // debug: true
           },
           transform: [
             // ['uglifyify', { global: true }]
