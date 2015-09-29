@@ -137,7 +137,16 @@ module.exports = function (grunt) {
     browserify: {
       dist: {
         src: ['<%= config.app %>/scripts/**/*.js'],
-        dest: '.tmp/scripts/main.js'
+        dest: '.tmp/scripts/main.js',
+        options: {
+          browserifyOptions: {
+            debug: true
+          },
+          transform: [
+            // ['uglifyify', { global: true }]
+            'uglifyify'
+          ]
+        }
       }
     },
 
@@ -178,7 +187,17 @@ module.exports = function (grunt) {
     // additional tasks can operate on them
     useminPrepare: {
       options: {
-        dest: '<%= config.dist %>'
+        dest: '<%= config.dist %>',
+        flow: {
+          steps: {
+            browserify: ['concat'],
+            js: ['concat', 'uglify'],
+            css: ['concat', 'cssmin']
+          },
+          post: {
+            // pass
+          }
+        }
       },
       html: '<%= config.app %>/index.html'
     },
@@ -189,7 +208,12 @@ module.exports = function (grunt) {
         assetsDirs: [
           '<%= config.dist %>',
           '<%= config.dist %>/styles'
-        ]
+        ],
+        blockReplacements: {
+          browserify: function (block) {
+            return '<script src="' + block.dest + '"></script>';
+          }
+        }
       },
       html: ['<%= config.dist %>/{,*/}*.html'],
       css: ['<%= config.dist %>/styles/{,*/}*.css']
