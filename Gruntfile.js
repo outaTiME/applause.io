@@ -135,13 +135,19 @@ module.exports = function (grunt) {
     },
 
     browserify: {
-      dist: {
+      dev: {
         src: ['<%= config.app %>/scripts/**/*.js'],
         dest: '.tmp/scripts/main.js',
         options: {
           browserifyOptions: {
-            // debug: true
-          },
+            debug: true
+          }
+        }
+      },
+      dist: {
+        src: ['<%= config.app %>/scripts/**/*.js'],
+        dest: '.tmp/scripts/main.js',
+        options: {
           transform: [
             // ['uglifyify', { global: true }]
             'uglifyify'
@@ -318,7 +324,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'concurrent:server',
-      'browserify',
+      'browserify:dev',
       'postcss',
       'browserSync:livereload',
       'watch'
@@ -334,7 +340,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'useminPrepare',
     'concurrent:dist',
-    'browserify',
+    'browserify:dist',
     'postcss',
     'concat',
     'cssmin',

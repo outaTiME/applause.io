@@ -54,7 +54,7 @@ var optionsEditor;
 var textEditor;
 var substitutionEditor;
 
-// TODO: block when async methods
+// TODO: block UI on async methods
 
 var _applause;
 
@@ -62,56 +62,47 @@ var replace = function() {
   var start = Date.now();
   var sourceValue = textEditor.getValue();
   var result = _applause.replace(sourceValue);
-  var matches = [];
-  var content = sourceValue;
+  var replaceTime = Date.now() - start;
   var doc = textEditor.getDoc();
   // clear all marks
   var marks = doc.getAllMarks();
   marks.forEach(function(mark) {
     mark.clear();
   });
-  if (result.count > 0) {
-    (result.detail || []).forEach(function(detail) {
-      var re = detail.match;
-      var match;
-      while ((match = re.exec(sourceValue)) !== null) {
+  var count = result.count;
+  if (count > 0) {
+    (result.matches || []).forEach(function(match) {
+      var re = match.re;
+      var arr;
+      while ((arr = re.exec(sourceValue)) !== null) {
         // highlight
-        var from = doc.posFromIndex(match.index);
-        var to = doc.posFromIndex(match.index + match[0].length);
+        var from = doc.posFromIndex(arr.index);
+        var to = doc.posFromIndex(arr.index + arr[0].length);
         // console.log('Mark text', from, to);
         doc.markText(from, to, {
           className: 'match-background'
         });
-        // detail
-        var matchDetail = {
-          match: match[0],
-          start: match.index,
-          end: match.index + match[0].length - 1
-        };
-        matches.push(matchDetail);
         // console.log('Match detail', matchDetail);
         if (!re.global) { // or it will become infinite.
           break;
         }
       }
     });
-    content = result.content;
   }
-  // console.log('Replace matches', matches);
   // update view
-  var count = matches.length;
   var matchesDom = $('.options .results').removeClass('hidden');
-  if (count === 0) {
-    matchesDom.text('No matches');
-  } else if (count === 1) {
-    matchesDom.text('1 match');
-  } else {
-    matchesDom.text(count + ' matches');
+  var replaceDetail = 'No matches';
+  if (count === 1) {
+    replaceDetail = '1 match'
+  } else if (count > 1) {
+    replaceDetail = count + ' matches'
   }
-  // trace
-  console.log('Replace took ' + (Date.now() - start) + ' ms');
+  if (replaceTime > 0) {
+    replaceDetail += ' (' + replaceTime + ' ms)';
+  }
+  matchesDom.text(replaceDetail);
   // update result
-  substitutionEditor.setValue(content, 1);
+  substitutionEditor.setValue(result.content);
 };
 
 var create = function() {
@@ -119,7 +110,7 @@ var create = function() {
   // console.log('Create applause instance with:', optionsValue);
   // create new applause instance
   _applause = Applause.create($.extend({}, optionsValue, {
-    // force
+    // pass
   }));
   replace();
 };
@@ -143,7 +134,11 @@ $(function() {
     // viewportMargin: Infinity
     autofocus: true,
     styleSelectedText: true,
-    lineWrapping: true
+    lineWrapping: true,
+
+    autoCloseBrackets: true,
+    matchBrackets: true
+
   });
   // optionsEditor.setOption('mode', spec);
   // CodeMirror.autoLoadMode(optionsEditor, spec);
@@ -167,7 +162,7 @@ $(function() {
   });
   // text
   var textTextArea = document.querySelector('div.text .editor');
-  textEditor = CodeMirror(textTextArea, {
+  textEditor = window._textEditor = CodeMirror(textTextArea, {
     value: defaultText,
     mode: 'Plain Text',
     lineNumbers: true,
@@ -180,10 +175,9 @@ $(function() {
   substitutionEditor = CodeMirror(substitutionTextArea, {
     mode: 'Plain Text',
     lineNumbers: true,
-    // value: defaultOptions,
-    readOnly: true,
     styleSelectedText: true,
-    lineWrapping: true
+    lineWrapping: true,
+    readOnly: true
   });
   // create initial instance and replace
   create();
